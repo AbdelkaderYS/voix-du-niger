@@ -1,0 +1,18 @@
+services:
+  zarma-tts-collection:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ZARMA_ADMIN_TOKEN: ${ZARMA_ADMIN_TOKEN:?Set ZARMA_ADMIN_TOKEN in your environment before starting}
+      ZARMA_DATA_DIR: /data
+      ZARMA_EXPORT_SAMPLE_RATE: ${ZARMA_EXPORT_SAMPLE_RATE:-22050}
+      ZARMA_BOOTSTRAP_ADMIN_USERNAME: ${ZARMA_BOOTSTRAP_ADMIN_USERNAME:-}
+      ZARMA_BOOTSTRAP_ADMIN_PASSWORD: ${ZARMA_BOOTSTRAP_ADMIN_PASSWORD:-}
+      ZARMA_SESSION_HOURS: ${ZARMA_SESSION_HOURS:-12}
+    volumes:
+      - zarma_data:/data
+    restart: unless-stopped
+
+volumes:
+  zarma_data:

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Enregistrez votre voix dans une langue du Niger pour aider à créer des outils qui comprennent et parlent ces langues.">
+  <title>Voix du Niger</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23b5470b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="/"><span class="wordmark-dot" aria-hidden="true"></span>Voix du Niger</a>
+    </div>
+  </header>
+
+  <main class="flow">
+    <section data-step="langue" aria-labelledby="langue-title">
+      <h1 id="langue-title" tabindex="-1">Enregistrez votre voix dans votre langue</h1>
+      <p class="lead">Lisez de courtes phrases ou répondez à une question, à voix haute. Ces enregistrements aident à créer des outils qui comprennent et parlent les langues du Niger.</p>
+      <h2 class="section-title">Choisissez votre langue</h2>
+      <p id="languageStatus" class="hint" role="status">Chargement des langues…</p>
+      <div id="languageList"></div>
+    </section>
+
+    <section data-step="activite" aria-labelledby="activite-title" hidden>
+      <a class="back" href="#langue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Retour</a>
+      <p class="step-count">Étape 2 sur 4</p>
+      <h1 id="activite-title" tabindex="-1">Que voulez-vous faire ?</h1>
+      <p class="lead">Langue choisie : <strong id="chosenLanguage"></strong></p>
+      <div class="choice-list">
+        <button id="chooseRead" class="choice" type="button">
+          <span class="choice-text"><span class="choice-name">Lire des phrases</span><span class="choice-note"></span></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="chooseSpeak" class="choice" type="button">
+          <span class="choice-text"><span class="choice-name">Parler librement</span><span class="choice-note"></span></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <section data-step="accord" aria-labelledby="accord-title" hidden>
+      <a class="back" href="#activite"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Retour</a>
+      <p class="step-count">Étape 3 sur 4</p>
+      <h1 id="accord-title" tabindex="-1">Votre accord</h1>
+      <ul class="facts">
+        <li>Participer est libre. Rien n’est envoyé tant que vous n’appuyez pas sur « Envoyer ».</li>
+        <li>L’équipe du projet écoute chaque enregistrement avant de l’utiliser.</li>
+        <li>Cet accord ne permet pas de publier vos enregistrements.</li>
+      </ul>
+      <fieldset class="checks">
+        <legend>Cochez ce que vous acceptez</legend>
+        <label class="check"><input id="consentBase" type="checkbox"><span>J’accepte que mes enregistrements soient collectés et écoutés par l’équipe de Voix du Niger.<small>Obligatoire</small></span></label>
+        <label class="check"><input id="consentAsr" type="checkbox"><span>Mes enregistrements peuvent servir à apprendre à un ordinateur à <strong>comprendre</strong> ma langue, c’est-à-dire à passer de la voix au texte.<small id="asrRequired">Obligatoire pour parler librement</small></span></label>
+        <label id="ttsRow" class="check"><input id="consentTts" type="checkbox"><span>Ma voix peut servir à apprendre à un ordinateur à <strong>parler</strong> ma langue, c’est-à-dire à passer du texte à la voix. La voix créée pourrait ressembler à la mienne.</span></label>
+      </fieldset>
+      <details class="more">
+        <summary>Lire le texte complet</summary>
+        <p>La reconnaissance de la parole (ASR) transforme la voix en texte. La synthèse vocale (TTS) fait l’inverse : elle produit de nouvelles paroles à partir d’un texte, en apprenant les caractéristiques des voix enregistrées. Une voix de synthèse peut donc ressembler à une voix enregistrée.</p>
+        <p>Ces deux autorisations sont séparées : vous pouvez accepter l’une sans l’autre. La parole libre sert seulement à la reconnaissance de la parole.</p>
+        <p>Vos enregistrements sont d’abord examinés par l’équipe. Ces choix n’autorisent ni leur publication ni leur partage public, qui demanderaient des conditions séparées.</p>
+        <p>Version du formulaire : <span id="consentVersionLabel"></span>. Texte de pilote, à faire valider et traduire dans les langues concernées.</p>
+      </details>
+      <p id="consentError" class="feedback error" role="alert" hidden></p>
+      <button id="consentNext" class="button button-primary button-block" type="button">Continuer</button>
+    </section>
+
+    <section data-step="code" aria-labelledby="code-title" hidden>
+      <a class="back" href="#accord"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Retour</a>
+      <p class="step-count">Étape 4 sur 4</p>
+      <h1 id="code-title" tabindex="-1">Votre code participant</h1>
+      <p class="lead">Ce code remplace votre nom. Utilisez le même à chaque visite.</p>
+      <form id="codeForm" novalidate>
+        <div class="field">
+          <label for="participantCode">Code participant</label>
+          <p id="codeHint" class="hint">Le code donné par l’équipe, par exemple VOX-001. N’écrivez pas votre nom.</p>
+          <input id="participantCode" class="input input-code" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-describedby="codeHint">
+          <button id="makeCode" class="link-button" type="button">Je n’ai pas de code</button>
+          <p id="codeNotice" class="feedback" role="status" hidden></p>
+        </div>
+        <h2 class="section-title">Facultatif</h2>
+        <div class="field">
+          <label for="regionSelect">Votre région</label>
+          <select id="regionSelect" class="input">
+            <option value="UNK">Je préfère ne pas le dire</option>
+            <option value="AGD">Agadez</option><option value="DIF">Diffa</option><option value="DOS">Dosso</option>
+            <option value="MAR">Maradi</option><option value="NIA">Niamey</option><option value="TAH">Tahoua</option>
+            <option value="TIL">Tillabéri</option><option value="ZIN">Zinder</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="dialectInput">Votre variante de la langue</label>
+          <p id="dialectHint" class="hint">Si vous la connaissez.</p>
+          <input id="dialectInput" class="input" maxlength="80" autocomplete="off" aria-describedby="dialectHint">
+        </div>
+        <p id="codeError" class="feedback error" role="alert" hidden></p>
+        <button class="button button-primary button-block" type="submit">Commencer l’enregistrement</button>
+      </form>
+    </section>
+
+    <section data-step="enregistrer" hidden>
+      <div class="record-top">
+        <a class="back" href="#code"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Retour</a>
+        <span id="progressText" class="progress-text"></span>
+      </div>
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+      <div id="itemView">
+        <h1 id="itemInstruction" class="instruction" tabindex="-1"></h1>
+        <p id="redoNote" class="feedback" hidden>L’équipe vous demande d’enregistrer à nouveau cette phrase.</p>
+        <div id="itemText" class="prompt" dir="auto"></div>
+        <p id="itemHint" class="hint prompt-hint"></p>
+
+        <div id="recorder" class="recorder">
+          <p class="timer"><span class="live-dot" aria-hidden="true"></span><span id="timer">0:00</span><span class="timer-max"> / 1:00</span></p>
+          <button id="recordBtn" class="record-button" type="button" aria-label="Commencer l’enregistrement">
+            <svg class="icon-mic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V20H9a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-2v-2.59a6 6 0 0 0 5-5.91z"/></svg>
+            <svg class="icon-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>
+          </button>
+          <p id="recordLabel" class="record-label">Appuyez pour enregistrer</p>
+        </div>
+
+        <div id="review" class="review" hidden>
+          <button id="playBtn" class="button button-secondary button-block play-button" type="button">
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+            <span id="playLabel">Écouter</span>
+            <span id="playTime" class="play-time"></span>
+          </button>
+          <div class="button-row">
+            <button id="retryBtn" class="button button-secondary" type="button">Recommencer</button>
+            <button id="sendBtn" class="button button-primary" type="button">Envoyer</button>
+          </div>
+        </div>
+
+        <p id="recordMessage" class="feedback" role="status" aria-live="polite" hidden></p>
+        <button id="skipBtn" class="link-button skip" type="button">Passer cette phrase</button>
+      </div>
+
+      <div id="endView" class="end" hidden>
+        <h2 id="endTitle" tabindex="-1"></h2>
+        <p id="endText"></p>
+        <button id="endAction" class="button button-primary button-block" type="button"></button>
+      </div>
+
+      <p class="code-reminder">Votre code participant : <strong id="codeReminder"></strong></p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Voix du Niger, projet pilote de collecte de voix</span>
+      <a href="/admin">Espace équipe</a>
+    </div>
+  </footer>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

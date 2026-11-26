@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Espace de l’équipe Voix du Niger : revue, textes, exports et suivi de la collecte.">
+  <title>Voix du Niger, espace équipe</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7' fill='%23b5470b'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="team">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="/admin"><span class="wordmark-dot" aria-hidden="true"></span>Voix du Niger <span class="wordmark-sub">Équipe</span></a>
+      <div class="topbar-links">
+        <a href="/">Page publique</a>
+        <button id="forgetBtn" class="link-button" type="button" hidden>Se déconnecter</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="authPanel" class="auth-card" aria-labelledby="auth-title">
+      <h1 id="auth-title">Connexion de l’équipe</h1>
+      <p class="lead">Espace réservé aux personnes qui gèrent la collecte.</p>
+      <form id="loginForm">
+        <div class="field"><label for="loginUsername">Nom d’utilisateur</label><input id="loginUsername" autocomplete="username"></div>
+        <div class="field"><label for="loginPassword">Mot de passe</label><input id="loginPassword" type="password" autocomplete="current-password"></div>
+        <button id="connectBtn" class="button button-primary button-block" type="submit">Se connecter</button>
+        <details class="recording-provenance">
+          <summary>Utiliser la clé de secours</summary>
+          <div class="field"><label for="adminToken">Clé serveur</label><input id="adminToken" type="password" autocomplete="off" placeholder="ZARMA_ADMIN_TOKEN"></div>
+          <p class="fine-print">Cette clé donne tous les droits. Au quotidien, utilisez un compte avec un rôle limité.</p>
+        </details>
+      </form>
+      <p class="fine-print">Les sessions expirent automatiquement. Le premier compte se crée avec ZARMA_BOOTSTRAP_ADMIN_USERNAME et ZARMA_BOOTSTRAP_ADMIN_PASSWORD. HTTPS est obligatoire en dehors d’un poste local.</p>
+    </section>
+
+    <div id="workspace" class="team-shell hidden">
+      <nav class="sidenav" aria-label="Sections de l’espace équipe">
+        <a href="#vue" data-view-link="vue">Vue d’ensemble</a>
+        <a href="#revue" data-view-link="revue" class="reviewer-only">Écouter et valider <span id="reviewCount" class="nav-count"></span></a>
+        <a href="#textes" data-view-link="textes" class="language-content-only">Textes</a>
+        <a href="#volontaires" data-view-link="volontaires" class="volunteer-monitor-only">Volontaires</a>
+        <a href="#export" data-view-link="export" class="dataset-manager-only">Export</a>
+        <a href="#datasets" data-view-link="datasets" class="dataset-manager-only">Datasets</a>
+        <a href="#entrainement" data-view-link="entrainement" class="training-only">Entraînement</a>
+        <a href="#serveurs" data-view-link="serveurs" class="provider-manager-only">Serveurs de calcul</a>
+        <a href="#equipe" data-view-link="equipe" class="admin-only">Comptes</a>
+        <a href="#journal" data-view-link="journal" class="admin-only">Journal</a>
+        <a href="#retraits" data-view-link="retraits" class="privacy-officer-only">Retraits de données</a>
+      </nav>
+
+      <div>
+        <section class="view" data-view="vue" aria-labelledby="vue-title">
+          <h2 id="vue-title">Vue d’ensemble</h2>
+          <p id="sessionActor" class="session-actor"></p>
+          <div id="statsGrid" class="stats-grid" aria-label="Chiffres de la collecte"></div>
+          <div class="panel">
+            <h3>Par langue</h3>
+            <div id="languageDashboard" class="table-scroll"></div>
+            <p class="fine-print">Les heures sont estimées à partir de la durée audio décodée.</p>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h3>Par région</h3>
+              <div class="field">
+                <label for="dashboardRegionFilter">Afficher</label>
+                <select id="dashboardRegionFilter">
+                  <option value="all">Toutes les régions</option>
+                  <option value="AGD">Agadez</option><option value="DIF">Diffa</option><option value="DOS">Dosso</option>
+                  <option value="MAR">Maradi</option><option value="NIA">Niamey</option><option value="TAH">Tahoua</option>
+                  <option value="TIL">Tillabéri</option><option value="ZIN">Zinder</option><option value="UNK">Non précisée</option>
+                </select>
+              </div>
+            </div>
+            <div id="regionDashboard" class="table-scroll"></div>
+          </div>
+          <div class="panel">
+            <h3>Files de travail</h3>
+            <div id="workflowDashboard" class="workflow-summary"></div>
+          </div>
+        </section>
+
+        <section class="view reviewer-only" data-view="revue" aria-labelledby="revue-title" hidden>
+          <h2 id="revue-title">Écouter et valider</h2>
+          <p class="view-intro">Écoutez l’audio, corrigez la transcription si besoin, puis choisissez pour quelle tâche la prise est utilisable : reconnaissance (ASR), synthèse (TTS) ou les deux. La parole libre ne peut pas être validée pour la synthèse.</p>
+          <div class="toolbar">
+            <div class="field">
+              <label for="statusFilter">Statut</label>
+              <select id="statusFilter">
+                <option value="pending_review">À vérifier</option><option value="approved">Validés</option>
+                <option value="redo">À refaire</option><option value="rejected">Rejetés</option><option value="all">Tous</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="taskTypeFilter">Activité</label>
+              <select id="taskTypeFilter">
+                <option value="all">Toutes</option><option value="read_speech">Lecture de phrases</option><option value="spontaneous_speech">Parole libre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="reviewerLabel">Votre code réviseur</label>
+              <input id="reviewerLabel" maxlength="120" placeholder="Par exemple REV-01" autocomplete="off">
+            </div>
+          </div>
+          <div id="recordingsList" class="recordings-list"><p class="muted">Connectez-vous pour afficher les enregistrements.</p></div>
+        </section>
+
+        <section class="view language-content-only" data-view="textes" aria-labelledby="textes-title" hidden>
+          <h2 id="textes-title">Textes à enregistrer</h2>
+          <p class="view-intro">Importez seulement des textes relus et approuvés par un locuteur compétent. Les lignes en attente ou avec un marqueur provisoire (TO_VERIFY, TBD, PENDING_RIGHTS_REVIEW) sont refusées. L’application n’invente aucun texte.</p>
+          <div class="panel">
+            <h3>Phrases à lire</h3>
+            <div class="field"><label for="phraseCsv">Fichier CSV en UTF-8</label><input id="phraseCsv" type="file" accept=".csv,text/csv"></div>
+            <div class="button-row"><button id="importBtn" class="button button-primary" type="button">Importer les phrases</button><a href="/static/phrases_template.csv" download>Télécharger le modèle</a></div>
+            <div id="importResult" class="feedback hidden" role="status"></div>
+            <details class="recording-provenance">
+              <summary>Colonnes attendues</summary>
+              <div class="provenance-body"><code>language_code, text_prompt, category, orthography_version, source, source_license, native_review_status, native_reviewed_by, native_reviewed_at</code><span>APPROVED, le nom du réviseur natif et la date sont obligatoires. Les droits de la source doivent être vérifiés.</span></div>
+            </details>
+          </div>
+          <div class="panel">
+            <h3>Questions pour la parole libre</h3>
+            <p class="hint">Rédigées et vérifiées dans la langue cible par une personne compétente.</p>
+            <div class="field"><label for="elicitationCsv">Fichier CSV en UTF-8</label><input id="elicitationCsv" type="file" accept=".csv,text/csv"></div>
+            <div class="button-row"><button id="importElicitationBtn" class="button button-primary" type="button">Importer les questions</button><a href="/static/elicitation_prompts_template.csv" download>Télécharger le modèle</a></div>
+            <div id="elicitationImportResult" class="feedback hidden" role="status"></div>
+            <details class="recording-provenance">
+              <summary>Colonnes attendues</summary>
+              <div class="provenance-body"><code>language_code, prompt_text, category, orthography_version, source, source_license, native_review_status, native_reviewed_by, native_reviewed_at</code><span>Seules les lignes APPROVED sont importées. Indiquez la variété ou l’orthographe, le réviseur natif et la date. Le statut seul ne remplace pas un vrai contrôle linguistique.</span></div>
+            </details>
+          </div>
+        </section>
+
+        <section class="view volunteer-monitor-only" data-view="volontaires" aria-labelledby="volontaires-title" hidden>
+          <h2 id="volontaires-title">Volontaires</h2>
+          <p class="view-intro">Vue par code pseudonyme, limitée à votre périmètre. Aucun nom, numéro de téléphone ni contact n’est affiché.</p>
+          <div class="button-row"><button id="refreshVolunteersBtn" class="button button-secondary" type="button">Actualiser</button></div>
+          <div id="volunteersDashboard" class="table-scroll panel-gap"></div>
+        </section>
+
+        <section class="view dataset-manager-only" data-view="export" aria-labelledby="export-title" hidden>
+          <h2 id="export-title">Exporter le corpus</h2>
+          <p class="view-intro">Archive ZIP avec les fichiers WAV (mono, PCM 16 bits, fréquence fixée par le serveur) et un fichier metadata.csv. Seuls les enregistrements validés pour la tâche choisie sont inclus.</p>
+          <div class="panel">
+            <div class="button-row"><button id="exportAsrBtn" class="button button-primary" type="button">Exporter pour l’ASR (voix vers texte)</button><button id="exportTtsBtn" class="button button-secondary" type="button">Exporter pour le TTS (texte vers voix)</button></div>
+            <p class="fine-print">Avant l’entraînement, vérifiez le consentement, les droits, les transcriptions et la séparation train, validation et test.</p>
+          </div>
+        </section>
+
+        <section class="view dataset-manager-only" data-view="datasets" aria-labelledby="datasets-title" hidden>
+          <h2 id="datasets-title">Datasets préparés</h2>
+          <p class="view-intro">Créez une release à partir des enregistrements validés, préparez-la sur le serveur avec <code>scripts/prepare_release.py</code>, inspectez le rapport qualité, puis approuvez-la après contrôle des transcriptions, des droits et des partitions.</p>
+          <form id="releaseCreateForm" class="management-form panel dataset-create-only">
+            <div class="field"><label for="releaseTask">Tâche</label><select id="releaseTask"><option value="asr">ASR (voix vers texte)</option><option value="tts">TTS (texte vers voix)</option></select></div>
+            <div class="field"><label for="releaseLanguage">Langue</label><select id="releaseLanguage"></select></div>
+            <div class="field">
+              <label for="releaseRegion">Région</label>
+              <select id="releaseRegion">
+                <option value="ALL">National, toutes les régions (admin)</option>
+                <option value="AGD">Agadez</option><option value="DIF">Diffa</option><option value="DOS">Dosso</option>
+                <option value="MAR">Maradi</option><option value="NIA">Niamey</option><option value="TAH">Tahoua</option>
+                <option value="TIL">Tillabéri</option><option value="ZIN">Zinder</option><option value="UNK">Région non renseignée</option>
+              </select>
+            </div>
+            <div class="field"><label for="releaseLabel">Nom de la release</label><input id="releaseLabel" maxlength="200" placeholder="asr-dje-pilote-01"></div>
+            <button class="button button-primary" type="submit">Créer la release</button>
+          </form>
+          <div id="releaseCreateFeedback" class="feedback hidden" role="status"></div>
+          <div id="releasesList" class="management-list"></div>
+        </section>
+
+        <section class="view training-only" data-view="entrainement" aria-labelledby="entrainement-title" hidden>
+          <h2 id="entrainement-title">Entraînement</h2>
+          <p class="view-intro">Un run part toujours d’une release approuvée. Cette page journalise le run ; elle ne lance pas de calcul distant automatiquement.</p>
+          <form id="trainingCreateForm" class="management-form panel">
+            <div class="field"><label for="trainingRelease">Dataset approuvé</label><select id="trainingRelease"></select></div>
+            <div class="field"><label for="trainingProvider">Serveur de calcul</label><select id="trainingProvider"><option value="">Non défini ou local</option></select></div>
+            <div class="field"><label for="trainingModel">Modèle de base</label><input id="trainingModel" required maxlength="200" placeholder="Modèle choisi après benchmark"></div>
+            <div class="field">
+              <label for="trainingMethod">Méthode</label>
+              <select id="trainingMethod">
+                <option value="full_finetuning">Full fine-tuning (par défaut)</option><option value="lora">LoRA</option><option value="qlora">QLoRA</option>
+                <option value="adapter">Adapters</option><option value="continued_pretraining">Continued pre-training</option>
+              </select>
+            </div>
+            <button class="button button-primary" type="submit">Créer le run</button>
+          </form>
+          <div id="trainingFeedback" class="feedback hidden" role="status"></div>
+          <div id="trainingJobsList" class="management-list"></div>
+        </section>
+
+        <section class="view provider-manager-only" data-view="serveurs" aria-labelledby="serveurs-title" hidden>
+          <h2 id="serveurs-title">Serveurs de calcul</h2>
+          <p class="view-intro">Serveur local avec GPU, SSH, Slurm, notebook, GPU dans le cloud ou API gérée. Aucun secret n’est stocké ici : seul le nom d’une variable d’environnement est conservé.</p>
+          <form id="providerCreateForm" class="management-form panel provider-create-only">
+            <div class="field"><label for="providerName">Nom</label><input id="providerName" required maxlength="160" placeholder="Serveur GPU du laboratoire"></div>
+            <div class="field">
+              <label for="providerType">Type</label>
+              <select id="providerType">
+                <option value="local_gpu">GPU local</option><option value="ssh_server">Serveur SSH</option><option value="slurm">Cluster Slurm ou HPC</option>
+                <option value="notebook">Notebook</option><option value="cloud_gpu">GPU dans le cloud</option><option value="managed_api">API gérée</option><option value="other">Autre</option>
+              </select>
+            </div>
+            <div class="field"><label for="providerEndpoint">Adresse (HTTPS ou localhost)</label><input id="providerEndpoint" type="url" placeholder="https://serveur.example"></div>
+            <div class="field"><label for="providerRegion">Emplacement</label><input id="providerRegion" maxlength="120"></div>
+            <div class="field"><label for="providerEnvVar">Variable du secret (facultatif)</label><input id="providerEnvVar" maxlength="120" placeholder="TRAINING_PROVIDER_TOKEN"></div>
+            <div class="field"><label for="providerNotes">Notes et responsable</label><input id="providerNotes" maxlength="2000"></div>
+            <button class="button button-primary" type="submit">Enregistrer le serveur</button>
+          </form>
+          <div id="providerFeedback" class="feedback hidden" role="status"></div>
+          <div id="providersList" class="management-list"></div>
+        </section>
+
+        <section class="view admin-only" data-view="equipe" aria-labelledby="equipe-title" hidden>
+          <h2 id="equipe-title">Comptes de l’équipe</h2>
+          <p class="view-intro">Chaque compte ne reçoit que les tâches nécessaires. Les langues et régions attribuées limitent ce que la personne voit. Les volontaires n’ont pas besoin de compte.</p>
+          <form id="userCreateForm" class="management-form panel">
+            <div class="field"><label for="newUsername">Nom d’utilisateur</label><input id="newUsername" minlength="3" maxlength="64" required autocomplete="off"></div>
+            <div class="field"><label for="newDisplayName">Nom affiché</label><input id="newDisplayName" maxlength="160"></div>
+            <div class="field">
+              <label for="newUserRole">Rôle</label>
+              <select id="newUserRole">
+                <option value="transcriber">Transcription (transcriber)</option>
+                <option value="reviewer">Revue ASR (reviewer)</option>
+                <option value="validator">Validation finale (validator)</option>
+                <option value="language_lead">Responsable de langue (language_lead)</option>
+                <option value="dataset_manager">Gestion du corpus (dataset_manager)</option>
+                <option value="training_operator">Entraînement (training_operator)</option>
+                <option value="provider_manager">Serveurs de calcul (provider_manager)</option>
+                <option value="privacy_officer">Protection des données (privacy_officer)</option>
+                <option value="admin">Administration complète (admin)</option>
+              </select>
+            </div>
+            <div class="field"><label for="newUserPassword">Mot de passe temporaire (14 caractères minimum)</label><input id="newUserPassword" type="password" minlength="14" required autocomplete="new-password"></div>
+            <div class="field"><label for="newUserLanguages">Langues (codes séparés par des virgules)</label><input id="newUserLanguages" placeholder="dje,ha"></div>
+            <div class="field"><label for="newUserRegions">Régions (codes séparés par des virgules)</label><input id="newUserRegions" placeholder="NIA,TIL"></div>
+            <button class="button button-primary" type="submit">Créer le compte</button>
+          </form>
+          <p class="fine-print">Langues et régions sont obligatoires pour tous les rôles sauf admin.</p>
+          <div id="userCreateFeedback" class="feedback hidden" role="status"></div>
+          <div id="usersList" class="management-list"></div>
+        </section>
+
+        <section class="view admin-only" data-view="journal" aria-labelledby="journal-title" hidden>
+          <h2 id="journal-title">Journal d’audit</h2>
+          <p class="view-intro">Changements de comptes, imports, releases, serveurs et runs. Les détails ne doivent contenir ni secret ni donnée personnelle inutile.</p>
+          <div class="button-row"><button id="refreshAuditBtn" class="button button-secondary" type="button">Actualiser</button></div>
+          <div id="auditEvents" class="table-scroll panel-gap"></div>
+        </section>
+
+        <section class="view privacy-officer-only" data-view="retraits" aria-labelledby="retraits-title" hidden>
+          <h2 id="retraits-title">Retirer les données d’un participant</h2>
+          <p class="view-intro">À utiliser seulement après avoir vérifié la demande et le code transmis par le participant selon la procédure convenue. La suppression touche la base et l’audio du stockage actif.</p>
+          <div class="panel">
+            <div class="field"><label for="deleteParticipantCode">Code participant</label><input id="deleteParticipantCode" maxlength="40" autocomplete="off" placeholder="Par exemple VOX-001"></div>
+            <div class="field">
+              <label for="deletionReason">Motif</label>
+              <select id="deletionReason">
+                <option value="participant_withdrawal">Retrait du consentement</option>
+                <option value="data_subject_request">Demande de suppression</option>
+                <option value="duplicate_or_wrong_code">Code erroné ou doublon</option>
+              </select>
+            </div>
+            <div class="field"><label for="deletionHandledBy">Code de la personne responsable</label><input id="deletionHandledBy" maxlength="120" autocomplete="off" placeholder="Par exemple DATA-01"></div>
+            <button id="deleteParticipantBtn" class="button button-danger" type="button">Supprimer du stockage actif</button>
+            <p class="fine-print">Le journal garde le motif, la personne responsable et le nombre de fichiers supprimés, mais pas le code participant. Les sauvegardes, les exports déjà téléchargés, les copies partagées et les modèles déjà entraînés ne sont pas touchés.</p>
+            <div id="deletionFeedback" class="feedback hidden" role="status" aria-live="polite"></div>
+            <details class="recording-provenance"><summary>Historique des suppressions</summary><div id="deletionEvents" class="provenance-body"></div></details>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <p id="adminFeedback" class="feedback hidden" role="status" aria-live="polite"></p>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>Voix du Niger, espace équipe</span>
+      <span>Version 0.6.0</span>
+    </div>
+  </footer>
+  <script src="/static/admin.js" defer></script>
+</body>
+</html>
